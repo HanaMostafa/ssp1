@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include"ssp.h"
-uint8 dataflag=notready;
+
 unsigned short compute_crc16( unsigned char* data_p, unsigned char length){
     unsigned char x;
     unsigned short crc = 0xFFFF;
@@ -25,8 +25,8 @@ crc = (crc & 0x00FF00FF) << 8 | (crc & 0xFF00FF00) >> 8;
     return crc;
 }
 
-void getdata(uint8 * data,uint16 *z){
-	dataflag=notready;
+void getdata(uint8 * data,uint16 *z,uint8* dataflag){
+ *dataflag=notready;
 	uint8 i;
 
 	uint8 arr[]={0x24,0xdb,0xc0,0xda,0x29,0xb4,0xc0,0x54,0xc0,0x33,0xc0,0xc0,0xc0,0x46,0xc0,0x37,0xc0,0x28,0xc0,0x37,0xc0,0x16,0x19,0x68,0xc0,0xdb};
@@ -39,11 +39,11 @@ void getdata(uint8 * data,uint16 *z){
 
 }
 
-	dataflag=ready;
+	*dataflag=ready;
 }
 int main()
 {
-uint8 dataflag=0;
+uint8 dataflag;
 uint8 size=0;
 uint16 z;
 uint8 i;
@@ -57,7 +57,7 @@ uint8 data[info];
 uint8 rxframe[dt];
 //uint16 z=sizeof(arr);
 
-getdata(&data,&z);
+getdata(&data,&z,&dataflag);
 
 
 uint8 adddest;
@@ -66,12 +66,12 @@ uint8 type;
 uint8 datta[info];
 uint16 size3=0;
 
-//if(dataflag==ready){
+if(dataflag==ready){
 ssp_frame(&txframe,&data,desti,srce,typee,z);
-/*for(i=0;i<46;i++){
 
-      printf("%x \n",txframe[i]);}*/
-//}
+
+}
+dataflag=notready;
 
 //printf("size = %d \n",size);
 print(&txframe,&rxframe);
