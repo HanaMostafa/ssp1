@@ -156,7 +156,7 @@ printf("sizeeeeeee count = %d \n",count);
 
 
 void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* datta,uint16 *size3){
-    uint16 i,j,d,size2,size=0,crc;
+    uint16 i,j,d,size2,size=1,crc;
     uint8 count=0,k,y=0,arr[dt];
     for(j=1;j<dt;j++){
 
@@ -172,7 +172,8 @@ void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* da
         }
 
 }
-for(d=1;d<size;d++){
+
+for(d=1;d<size-1;d++){
         arr[y]=rxframe[d];
   printf("frame %x \n",arr[d-1]);
   y++;
@@ -200,6 +201,7 @@ for(i=4;i<(size-3);i++){
 
         }
 }
+
 for(i=4;i<(size-3);i++){
     if((datta[i]==0xdb) && (datta[i+1]==0xdd)){
 
@@ -243,4 +245,17 @@ printf("data %x \n",datta[i]);
 */
 
     }
+}
+
+
+void commandtype(uint8 *type){
+
+ if(type==0x01){
+
+ }
+
+if(type==0x2c){
+
+ }
+
 }

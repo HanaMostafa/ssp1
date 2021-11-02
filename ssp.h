@@ -54,5 +54,5 @@ typedef unsigned short        uint16;
 void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,uint16 z);
 void print(uint8 *txframe ,uint8 *rxframe);
 void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8 *datta,uint16 *size3);
-
+void commandtype(uint8 *type);
 #endif // SSP_H

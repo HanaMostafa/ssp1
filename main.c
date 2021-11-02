@@ -83,5 +83,6 @@ for(i=4;i<(size3);i++){
 printf(" %x \n",datta[i]);
 }
 printf("type = %x \n",type);
+commandtype(type);
     return 0;
 }
