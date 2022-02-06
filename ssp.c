@@ -3,7 +3,7 @@
 #include "ssp.h"
 #include "time.h"
 
-void layer (uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data){
+void layer (uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size){
     uint8 controlflag=idle,source=0x6b;
     uint8 layerflag=notready;
     uint8 i;
@@ -15,6 +15,7 @@ if(*dataflag==ready && controlflag==idle&& *txflag==notready){
  for(i=0;i<z;i++){
  Tx_Frm_data[i]=Tx_App_data[i];
  }
+ *tx_size=z;
  *Tx_Frm_desti=Tx_App_desti;
  *Tx_Frm_type=Tx_App_type;
 *txflag=ready;
@@ -50,7 +51,7 @@ controlflag=idle;
  for(i=0;i<z;i++){
  Tx_Frm_data[i]=Tx_App_data[i];
  }
-
+*tx_size=z;
  *Tx_Frm_desti=Tx_App_desti;
  *Tx_Frm_type=Tx_App_type;
 *txflag=ready;
@@ -60,24 +61,34 @@ controlflag=idle;
   }
 }
  if(controlflag==rx) {
+        if (crcflag==notready){
         //frame ack w hab3ato ll tframing layer
         // hena el data hatb2a ehh ??
  *Tx_Frm_srce=Rx_Frm_dest;
- for(i=0;i<z;i++){
- Tx_Frm_data[i]=Tx_App_data[i];
- }
-
+ *tx_size=0;
+//hna kaman mafesh data
  *Tx_Frm_desti=source;
  *Tx_Frm_type=0x02;
  *txflag=ready;
   controlflag=idle;
+  }
+  else if (crcflag==ready){
+    *Tx_Frm_srce=Rx_Frm_dest;
+
+*tx_size=0;
+ //length =0 el hya z
+ *Tx_Frm_desti=source;
+ *Tx_Frm_type=0x03;
+ *txflag=ready;
+  controlflag=idle;
+  }
  }
 
 }
 
 
 
-void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,uint16 z,uint8 *txflag) {
+void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,uint16 tx_size,uint8 *txflag) {
 
     uint16 p,k;
 
@@ -107,14 +118,14 @@ void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,ui
  uint8 f,d,dattta[info],count=0,w=0,count2=0,arr[dt];
  int temp=0,temp2=0,temp3=0;
 uint16 crc,crc0,crc1;
-for(k=0;k<z;k++){
+for(k=0;k<tx_size;k++){
 
 if(data[k]==0xc0){
 
    count++;
 
 }}
-for(k=0;k<z;k++){
+for(k=0;k<tx_size;k++){
 
 if(data[k]==0xdb){
 
@@ -226,7 +237,7 @@ printf("sizeeeeeee count = %d \n",count);
      }
 
 
-void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* Rx_data,uint16 *length,uint8 *rxflag){
+void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* Rx_data,uint16 *length,uint8 *rxflag,uint8 *crcflag){
     uint16 i,j,d,size2,size=1,crc,size3;
     uint8 count=0,k,y=0,arr[dt],datta[info+4];
     *rxflag= notready;
@@ -320,9 +331,13 @@ printf("data %x \n",datta[i]);
 for(i=0;i<(*length);i++){
  Rx_data[i]=datta[i+4];
 }
+*crcflag=notready;
 
-*rxflag =ready;
     }
+    else {
+        *crcflag=ready;
+    }
+    *rxflag =ready;
 }
 
 
