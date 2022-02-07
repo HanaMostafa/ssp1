@@ -64,7 +64,7 @@ controlflag=idle;
         if (crcflag==notready){
         //frame ack w hab3ato ll tframing layer
         // hena el data hatb2a ehh ??
- *Tx_Frm_srce=Rx_Frm_dest;
+ *Tx_Frm_srce=*Rx_Frm_dest;
  *tx_size=0;
 //hna kaman mafesh data
  *Tx_Frm_desti=source;
@@ -73,7 +73,7 @@ controlflag=idle;
   controlflag=idle;
   }
   else if (crcflag==ready){
-    *Tx_Frm_srce=Rx_Frm_dest;
+    *Tx_Frm_srce=*Rx_Frm_dest;
 
 *tx_size=0;
  //length =0 el hya z
@@ -132,8 +132,8 @@ if(data[k]==0xdb){
    count2++;
 
 }}
-    temp=z+count;
-    temp2=z+count2;
+    temp=tx_size+count;
+    temp2=tx_size+count2;
 
 
   /*  temp3=z+count+count2;
