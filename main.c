@@ -62,8 +62,6 @@ uint8 desti2;
 uint8 type2;
 uint8 rxframe[dt];
 //uint16 z=sizeof(arr);
-
-getdata(data,&z,&dataflag);
 uint16 tx_size;
 uint8 adddest;
 uint8 addsrc;
@@ -71,19 +69,76 @@ uint8 type;
 uint8 Rx_data[info];
 uint16 Rx_length=0;
 uint8 layerdata[info];
- layer (data,z,desti,&srce, typee, &type2,data2, &desti2, &type, Rx_data,&adddest,Rx_length, &dataflag, &rxflag, &txflag,layerdata,crcflag,&tx_size);
+uint8 checkcontrol= notready;
+uint8 array[]={0xc0,0x6b,0x37,0x02,0x60,0xcd,0xc0};
+uint8 nack[]={0xc0,0x6b,0x37,0x03,0xe9,0xdc,0xc0};
+//printf("crc= %x \n",compute_crc16(array,5));
+//printf("crc= %x \n",compute_crc16(nack,5));
+
+while(1){
+if(checkcontrol==notready){
+
+getdata(data,&z,&dataflag);
+checkcontrol=ready;
+}
+if (checkcontrol == ready && txflag== notready){
+ management_layer(data,z,desti,&srce, typee, &type2,data2, &desti2, &type, Rx_data,&adddest,Rx_length, &dataflag, &rxflag, &txflag,layerdata,crcflag,&tx_size);
+checkcontrol=notready;
+
+}
 
 if(txflag==ready){
 ssp_frame(txframe,data2,desti2,srce,type2,tx_size,&txflag);
 
 
 }
+
+
+uint8 count=1,j;
+for(j=1;j<dt;j++){
+
+    if(txframe[j]==0xc0){
+count++;
+           break;
+
+        }
+        else{
+
+         count++;
+
+        }
+
+}
+printf("sizeeeeeee count = %d \n",count);
+ for(i=0;i<count;i++){
+
+      printf("%x \n",txframe[i]);}
+      printf("\n\n\n");
 //dataflag=notready;
 
 //printf("size = %d \n",size);
-print(txframe,rxframe);
-receiver(rxframe,&adddest,&addsrc,&type,Rx_data,&Rx_length,&rxflag,&crcflag);
 
+
+
+//for(i=0;i<7;i++){
+
+//      printf("%x \n",array[i]);
+ //     rxframe[i]=array[i];
+
+//      }
+
+
+
+      for(i=0;i<7;i++){
+
+      printf("%x \n",array[i]);
+      rxframe[i]=nack[i];
+
+      }
+//print(txframe,rxframe);
+if(rxflag==notready){
+receiver(rxframe,&adddest,&addsrc,&type,Rx_data,&Rx_length,&rxflag,&crcflag);
+}
 printf("\n\n\n after receiving \n\n\n data = \n\n");
 for(i=0;i<(Rx_length);i++){
 
@@ -91,7 +146,7 @@ printf(" %x \n",Rx_data[i]);
 }
 printf("type = %x \n",type);
 printf("destination = %x \n",adddest);
-
-
+//management_layer(data,z,desti,&srce, typee, &type2,data2, &desti2, &type, Rx_data,&adddest,Rx_length, &dataflag, &rxflag, &txflag,layerdata,crcflag,&tx_size);
+}
     return 0;
 }

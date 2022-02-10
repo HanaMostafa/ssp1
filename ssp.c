@@ -3,7 +3,8 @@
 #include "ssp.h"
 #include "time.h"
 
-void layer (uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size){
+void management_layer(uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size){
+
     uint8 controlflag=idle,source=0x6b;
     uint8 layerflag=notready;
     uint8 i;
@@ -115,8 +116,8 @@ void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,ui
 
 
 
- uint8 f,d,dattta[info],count=0,w=0,count2=0,arr[dt];
- int temp=0,temp2=0,temp3=0;
+ uint8 f,d,count=0,w=0,count2=0,arr[dt];
+ int temp=0,temp2=0;
 uint16 crc,crc0,crc1;
 for(k=0;k<tx_size;k++){
 
@@ -209,6 +210,7 @@ w=temp+count2+4;
 
 *txflag=notready;
 }
+
 void print(uint8 *txframe, uint8 *rxframe){
     int i,j,count=1;
 for(j=1;j<dt;j++){
@@ -256,23 +258,26 @@ void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* Rx
         }
 
 }
-
+//printf("size %x \n",size);
 for(d=1;d<size-1;d++){
         arr[y]=rxframe[d];
- // printf("frame %x \n",arr[d-1]);
+  //printf("frame %x \n",arr[d-1]);
   y++;
 }
+//printf("size %x \n",size);
+//printf("y %x \n",y);
+//crc=compute_crc16(arr,size-1);
 crc=compute_crc16(arr,y);
 //printf("crccc %x ",crc);
 
 
-
+//printf("crc gwa el function = %x \n",crc);
     size2=size-3;
 
     if(rxframe[fend]==0xc0 && crc==0x00){
         *adddest=rxframe[dest];
         *addsrc=rxframe[src];
-        *type=rxframe[3];
+        *type=rxframe[typ];
   for(i=4;i<(size-3);i++){
 
 datta[i]=rxframe[i];
@@ -322,7 +327,7 @@ if((datta[i]==0xdb) && (datta[i+1]==0xdd)){
 }}
 size3=size2-count;
 *length=size3-4;
-printf("size3 = %d \n",*length);
+//printf("size3 = %d \n",*length);
 /*for(i=4;i<(*size3);i++){
 
 printf("data %x \n",datta[i]);
@@ -338,6 +343,7 @@ for(i=0;i<(*length);i++){
         *crcflag=ready;
     }
     *rxflag =ready;
+   // printf( "type gwa e fun=  %x",*type);
 }
 
 
