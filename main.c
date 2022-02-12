@@ -46,7 +46,7 @@ int main()
 uint8 dataflag;
 uint8 rxflag=notready;
 uint8 txflag=notready;
-
+uint8 layerflag=notready;
 uint16 z;
 uint8 i;
 uint8 crcflag;
@@ -74,15 +74,20 @@ uint8 array[]={0xc0,0x6b,0x37,0x02,0x60,0xcd,0xc0};
 uint8 nack[]={0xc0,0x6b,0x37,0x03,0xe9,0xdc,0xc0};
 //printf("crc= %x \n",compute_crc16(array,5));
 //printf("crc= %x \n",compute_crc16(nack,5));
+uint8 datacheck[]={0xc0,0x6b,0x9a,0x2c,0x24,0xdb,0xdd,0xdb,0xdc,0xda,0x29,0xb4,0xdb,0xdc,0x54,0xdb,0xdc,0x33,0xdb,0xdc,0xdb,0xdc,0xdb,0xdc,0x46,0xdb,0xdc,0x37,0xdb,0xdc,0x28,0xdb,0xdc,0x37,0xdb,0xdc,0x16,0x19,0x68,0xdb,0xdc,0xdb,0xdd,0xf0,0xf,0xc0};
+uint8 datatoack[]={0xc0,0x6b,0x57,0x2c,0x48,0xdb,0xdd,0x47,0x38,0x18,0x6c,0xc0};
+uint8 dat[]={0xc0,0x78,0x57,0x2c,0x48,0xdb,0xdd,0x47,0x38,0x18,0x6c,0x3b,0xa6,0xc0};
+//printf("crc= %x \n",compute_crc16(dat,10));
+
 
 while(1){
-if(checkcontrol==notready){
+//if(checkcontrol==notready){
 
-getdata(data,&z,&dataflag);
-checkcontrol=ready;
-}
-if (checkcontrol == ready && txflag== notready){
- management_layer(data,z,desti,&srce, typee, &type2,data2, &desti2, &type, Rx_data,&adddest,Rx_length, &dataflag, &rxflag, &txflag,layerdata,crcflag,&tx_size);
+//getdata(data,&z,&dataflag);
+//checkcontrol=ready;
+//}
+if ((checkcontrol == ready && txflag== notready)||(checkcontrol == notready && layerflag== notready)){
+ management_layer(data,z,desti,&srce, typee, &type2,data2, &desti2, &type, Rx_data,&adddest,Rx_length, &dataflag, &rxflag, &txflag,layerdata,crcflag,&tx_size,&addsrc);
 checkcontrol=notready;
 
 }
@@ -129,12 +134,27 @@ printf("sizeeeeeee count = %d \n",count);
 
 
 
-      for(i=0;i<7;i++){
+    //  for(i=0;i<7;i++){
 
-      printf("%x \n",array[i]);
-      rxframe[i]=nack[i];
+    //  printf("%x \n",array[i]);
+  //    rxframe[i]=nack[i];
 
-      }
+  //    }
+
+ // for(i=0;i<46;i++){
+
+   //   printf("%x \n",datacheck[i]);
+  //  rxframe[i]=datacheck[i];
+  //}
+
+
+  for(i=0;i<12;i++){
+
+      printf("%x \n",dat[i]);
+    rxframe[i]=dat[i];
+  }
+
+
 //print(txframe,rxframe);
 if(rxflag==notready){
 receiver(rxframe,&adddest,&addsrc,&type,Rx_data,&Rx_length,&rxflag,&crcflag);

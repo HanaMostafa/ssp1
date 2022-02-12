@@ -3,7 +3,7 @@
 #include "ssp.h"
 #include "time.h"
 
-void management_layer(uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size){
+void management_layer(uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size,uint8 *Rx_Frm_src){
 
     uint8 controlflag=idle,source=0x6b;
     uint8 layerflag=notready;
@@ -68,7 +68,7 @@ controlflag=idle;
  *Tx_Frm_srce=*Rx_Frm_dest;
  *tx_size=0;
 //hna kaman mafesh data
- *Tx_Frm_desti=source;
+ *Tx_Frm_desti=*Rx_Frm_src;
  *Tx_Frm_type=0x02;
  *txflag=ready;
   controlflag=idle;
@@ -78,7 +78,7 @@ controlflag=idle;
 
 *tx_size=0;
  //length =0 el hya z
- *Tx_Frm_desti=source;
+ *Tx_Frm_desti=*Rx_Frm_src;
  *Tx_Frm_type=0x03;
  *txflag=ready;
   controlflag=idle;
@@ -244,6 +244,7 @@ void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8* Rx
     uint8 count=0,k,y=0,arr[dt],datta[info+4];
     *rxflag= notready;
     *adddest=rxframe[dest];
+    *addsrc=rxframe[src];
     for(j=1;j<dt;j++){
 
     if(rxframe[j]==0xc0){

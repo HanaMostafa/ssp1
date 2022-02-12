@@ -58,5 +58,5 @@ void ssp_frame(uint8 *txframe,uint8 *data ,uint8 desti,uint8 srce,uint8 typee,ui
 void print(uint8 *txframe ,uint8 *rxframe);
 void receiver(uint8 *rxframe,uint8* adddest,uint8* addsrc,uint8* type, uint8 *datta,uint16 *size3,uint8 *rxflag,uint8 *crcflag);
 void commandtype(uint8 *type);
-void management_layer(uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size);
+void management_layer(uint8 *Tx_App_data,uint16 z,uint8 Tx_App_desti,uint8 *Tx_Frm_srce,uint8 Tx_App_type,uint8 *Tx_Frm_type,uint8 *Tx_Frm_data,uint8 *Tx_Frm_desti,uint8 *Rx_Frm_type,uint8 *Rx_Frm_data,uint8 *Rx_Frm_dest,uint16 Rx_length,uint8 *dataflag,uint8 *rxflag,uint8 *txflag,uint8 *Rx_App_data,uint8 crcflag,uint16 *tx_size,uint8 *Rx_Frm_src);
 #endif // SSP_H
